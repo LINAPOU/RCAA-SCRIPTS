@@ -1,0 +1,17 @@
+id,scenario,acteurs,contexte,actions
+r1,restaurant,client-serveur,repas,entrer;choisir_table;commander;manger;payer;sortir
+r2,restaurant,client-serveur,repas,entrer;commander;boire;manger;demander_addition;payer
+r3,restaurant,client-serveur,repas,entrer;attendre;commander;manger;payer
+r4,restaurant,client-serveur,repas,entrer;commander;manger;sortir
+
+s1,supermarche,client-caissier,achat,entrer;prendre_panier;choisir_produits;payer;sortir
+s2,supermarche,client-caissier,achat,entrer;choisir_produits;faire_queue;payer
+s3,supermarche,client-caissier,achat,entrer;prendre_chariot;choisir_produits;payer;sortir
+
+h1,hopital,patient-medecin,consultation,entrer;inscription;attendre;consultation;sortir
+h2,hopital,patient-medecin,consultation,entrer;attendre;examens;diagnostic;sortir
+h3,hopital,patient-infirmier,soins,entrer;attendre;recevoir_soins;sortir
+
+u1,universite,etudiant-professeur,cours,entrer_classe;ecouter_cours;prendre_notes;sortir
+u2,universite,etudiant-professeur,cours,entrer_amphi;ecouter;poser_questions;sortir
+u3,universite,etudiant-professeur,examen,entrer_salle;passer_examen;remettre_copie;sortir
