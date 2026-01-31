@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RCAA - Interface Animée</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            width: 450px;
+            padding: 30px 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .result {
+            margin-top: 25px;
+            background: #f4f6f9;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            position: relative;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .result.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .result h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .result p {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .score-bar {
+            height: 15px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .score-fill {
+            height: 100%;
+            width: 0;
+            background: #667eea;
+            border-radius: 10px;
+            transition: width 1s ease-in-out, background 0.5s;
+        }
+
+        .score-label {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: right;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🔍 Système RCAA</h1>
+        <p>Actions séparées par <b>;</b></p>
+
+        <input type="text" id="actions" placeholder="entrer;commander;manger;payer">
+        <button onclick="reconnaitre()">Reconnaître</button>
+
+        <div class="result" id="resultat">
+            <h3>Résultat</h3>
+            <p><b>Actions :</b> <span id="res-actions"></span></p>
+            <p><b>ID :</b> <span id="res-id"></span></p>
+            <p><b>Scénario :</b> <span id="res-scenario"></span></p>
+            <div class="score-bar">
+                <div class="score-fill" id="score-fill"></div>
+            </div>
+            <div class="score-label" id="res-score"></div>
+        </div>
+    </div>
+
+    <script>
+        function reconnaitre() {
+            const actions = document.getElementById("actions").value;
+
+            fetch("http://localhost:8000/reconnaitre", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ actions: actions })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const div = document.getElementById("resultat");
+                    div.classList.add("show");
+
+                    document.getElementById("res-actions").textContent = data.actions.join(", ");
+                    document.getElementById("res-id").textContent = data.id;
+                    document.getElementById("res-scenario").textContent = data.scenario;
+
+                    // Barre de score dynamique avec couleur selon score
+                    const score = Math.min(data.score * 10, 100);
+                    const fill = document.getElementById("score-fill");
+                    fill.style.width = score + "%";
+
+                    // Couleur dynamique : vert si >7, orange si >4, rouge sinon
+                    if (score >= 70) fill.style.background = "#48bb78";
+                    else if (score >= 40) fill.style.background = "#ed8936";
+                    else fill.style.background = "#f56565";
+
+                    document.getElementById("res-score").textContent = "Score : " + data.score;
+                })
+                .catch(err => {
+                    alert("Erreur serveur : vérifie que server.py est lancé !");
+                    console.error(err);
+                });
+        }
+    </script>
+
+</body>
+
+</html>

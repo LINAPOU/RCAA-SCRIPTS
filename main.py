@@ -16,7 +16,7 @@ def main():
             print("\nMerci d'avoir utilisé le système !")
             break
 
-        actions = [a.strip() for a in saisie.split(",")]
+        actions = [a.strip() for a in saisie.split(";")]
 
         script_id, scenario, score = reconnaitre_scenario(actions, scripts)
 
